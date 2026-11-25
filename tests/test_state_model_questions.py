@@ -216,6 +216,151 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
         self._expect_reaches(self._late(lambda P, A: config.add_link(P['cwd'], A['cwd'], 't'), far=False))
 
 
+    # ---- SM-F15: a late answer to a handed-over question passes on A's scope --------------------
+    # P asked by A answers late, and between A and B the copy of A's connections failed (the person's
+    # approved list was empty, or one copy failed), or has not been made yet. P had a scope with A.
+    # Today send checks scope_for(P, B) only, finds none and refuses ("out of scope"): the
+    # conversation A started is cut. Target (spec 0, F15): a reply to a question that is B's by the
+    # handover passes on the scope P had with A; a new conversation keeps the present rule.
+    def _late_uncopied(self, setup, window=False, peer_in_a_folder=False):
+        """A asks P (scope from `setup`), hands over to B in another folder with NO link copy
+        (`window`: the copy has not run yet when P answers), P answers late. Returns
+        (send result, matched replies for B, B's question status, (P, A, B))."""
+        from xsm import adapters, config, handover, questions, receive
+        A = self.lead
+        P = self._sess('peer', cwd=A['cwd']) if peer_in_a_folder else self._sess('peer')
+        B = self._sess('nextfar')
+        setup(P, A)
+        self.assertIsNotNone(config.scope_for(P, A)[0], 'fixture: P and A must share a scope')
+        self.assertIsNone(config.scope_for(P, B)[0], 'fixture: P and B must share none')
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            ask = questions.ask(A, 'ref:%s' % P['ref'], 'what is 6*7?', request_id='q1')
+        self.assertEqual(ask['status'], 'pending', ask)
+        box = {}
+        if window:
+            real = handover._copy_links
+
+            def answer_first(*a, **k):
+                box['sent'] = self._answer(P, A, 'ANSWER-42', 'q1')
+                return real(*a, **k)
+            with mock.patch.object(handover, '_copy_links', side_effect=answer_first):
+                handover.hand_over(A, B, 'goal: x', 'x')
+        else:
+            plan = dict(handover.plan_links(A, B), links=[])        # the copy failed / was not approved
+            handover.hand_over(A, B, 'goal: x', 'x', plan)
+            box['sent'] = self._answer(P, A, 'ANSWER-42', 'q1')
+        matched = receive.poll_replies(B, 'q1')
+        return box['sent'], matched, questions.status(B, 'q1'), (P, A, B)
+
+    def _expect_passes(self, result):
+        from xsm import paths
+        sent, matched, st, (_P, _A, B) = result
+        self.assertIn(sent.status, ('delivered', 'sent-unconfirmed', 'stored', 'queued'), sent.reason)
+        self.assertGreaterEqual(matched, 1, 'the answer was not recorded for B')
+        self.assertEqual(st['status'], 'final')
+        held = paths.path(paths.HELD)
+        self.assertEqual([n for n in os.listdir(held) if n.endswith('.json')] if os.path.isdir(held) else [], [],
+                         'B\'s gate must not hold the answer')
+
+    def test_SM_F15_reach_copy_failed_late_answer_reaches_B(self):
+        from xsm import config
+        self._expect_passes(self._late_uncopied(lambda P, A: config.add_reach(A['ref'], P['cwd'], 't', A)))
+
+    def test_SM_F15_answer_before_the_link_copy_ran_reaches_B(self):
+        from xsm import config
+        self._expect_passes(self._late_uncopied(
+            lambda P, A: config.add_reach(A['ref'], P['cwd'], 't', A), window=True))
+
+    def test_SM_F15_same_folder_scope_copy_failed_late_answer_reaches_B(self):
+        self._expect_passes(self._late_uncopied(lambda P, A: None, peer_in_a_folder=True))
+
+    def test_SM_F15_named_project_scope_late_answer_reaches_B(self):
+        from xsm import config
+
+        def joined(P, A):
+            config.join('proj', A['cwd'])
+            config.join('proj', P['cwd'])
+        self._expect_passes(self._late_uncopied(joined))
+
+    def test_SM_F15_link_scope_copy_failed_late_answer_reaches_B(self):
+        from xsm import config
+        self._expect_passes(self._late_uncopied(lambda P, A: config.add_link(P['cwd'], A['cwd'], 't')))
+
+    def test_SM_F15_worker_scope_copy_failed_late_answer_reaches_B(self):
+        from xsm import workers
+        self._expect_passes(self._late_uncopied(lambda P, A: workers.save(
+            {'name': 'h', 'ref': P['ref'], 'parent_ref': A['ref']})))
+
+    def test_SM_F15_the_marker_says_the_answer_came_on_the_handover(self):
+        sent, _m, _st, _who = self._late_uncopied(
+            lambda P, A: __import__('xsm.config', fromlist=['x']).add_reach(A['ref'], P['cwd'], 't', A))
+        from xsm import ledger
+        self.assertTrue(str(ledger.status(sent.msg_id).get('scope') or '').startswith('handover:'),
+                        ledger.status(sent.msg_id).get('scope'))
+
+    # A new conversation is not a reply to a handed-over question: it keeps today's rule.
+    def test_control_SM_F15_a_new_dm_from_P_to_A_after_the_handover_is_refused(self):
+        from xsm import adapters, config, handover, send
+        A, P, B = self.lead, self._sess('peer'), self._sess('nextfar')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            res = send.send('ref:%s' % A['ref'], 'hello again', sender=P)
+        self.assertEqual(res.status, 'refused', res.reason)
+        self.assertIn('scope', res.reason)
+
+    def test_control_SM_F15_a_reply_to_a_question_nobody_of_B_asked_is_refused(self):
+        from xsm import adapters, config, handover, send
+        A, P, B = self.lead, self._sess('peer'), self._sess('nextfar')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            res = send.send('ref:%s' % A['ref'], 'late', sender=P, kind='reply', reply_to='nope', outcome='succeeded')
+        self.assertEqual(res.status, 'refused', res.reason)
+
+    def test_control_SM_F15_a_stranger_cannot_answer_for_the_one_asked(self):
+        from xsm import adapters, config, handover, questions, send
+        A, P, B = self.lead, self._sess('peer'), self._sess('nextfar')
+        Q = self._sess('stranger')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            questions.ask(A, 'ref:%s' % P['ref'], 'what is 6*7?', request_id='q1')
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            res = send.send('ref:%s' % A['ref'], 'late', sender=Q, kind='reply', reply_to='q1', outcome='succeeded')
+        self.assertEqual(res.status, 'refused', res.reason)
+
+    # ---- SM-F15 (join scopes are connections too; spec D1 detail) -------------------------------
+    # Today the copy covers a reach, the folder, links and workers, not a named project A joined
+    # with `xsm join`: P in the project reaches A and, after the handover, nobody.
+    def test_SM_F15_a_named_project_A_joined_is_copied_to_B_and_listed(self):
+        from xsm import adapters, config, handover, questions
+        A, P, B = self.lead, self._sess('peer'), self._sess('nextfar')
+        Q = self._sess('stranger')
+        config.join('proj', A['cwd'])
+        config.join('proj', P['cwd'])
+        self.assertIsNone(config.scope_for(P, B)[0])
+        rec = handover.hand_over(A, B, 'goal: x', 'x')
+        self.assertIsNotNone(config.scope_for(P, B)[0], 'B has no scope with the project A joined')
+        self.assertIsNone(config.scope_for(Q, B)[0], 'B must not get more than A had')
+        self.assertIn(os.path.realpath(P['cwd']), json.dumps(rec['links'], default=str)
+                      .replace(P['cwd'], os.path.realpath(P['cwd'])))
+        self.assertTrue(any('proj' in str(row) for row in rec['links']), rec['links'])
+
+    def test_SM_F15_a_project_copy_that_fails_is_skipped_and_listed(self):
+        from xsm import config, handover, teams
+        A, P, B = self.lead, self._sess('peer'), self._sess('nextfar')
+        config.join('proj', A['cwd'])
+        config.join('proj', P['cwd'])
+        plan = handover.plan_links(A, B)
+        gone = P['cwd']
+        shutil.rmtree(gone)                                    # the folder is missing when the copy runs
+        rec = handover.hand_over(A, B, 'goal: x', 'x', plan)
+        self.assertTrue(teams.is_lead(teams.require('core'), B))
+        bad = [row for row in rec['links'] if not row['ok']]
+        self.assertTrue(any(os.path.basename(gone) in json.dumps(row) for row in bad), rec['links'])
+
+
 # The fixture's own tests stay in test_handover; only this file's tests run here.
 for _name in dir(test_handover.HandoverTest):
     if _name.startswith('test_'):

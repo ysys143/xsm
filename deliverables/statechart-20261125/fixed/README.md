@@ -58,6 +58,7 @@ the fixed model, rule text unchanged unless the comment says CHANGED.
 | teams | XsmHandoverBoard | XsmHandoverBoard | MovedItemIsClosed, NoContentLeftBehind | breaks | holds | |
 | teams | XsmHandoverBoard | XsmHandoverBoard | EveryOwnerItemClosed | breaks | holds | CHANGED: `(all heads are notes) \/ (skipped /\ reported)`. Spec P5 does not move a multi-head item, it reports it (SM-F7) |
 | teams | XsmHandoverPlaces | XsmHandoverPlaces | PlaceAndItemsMoveTogether, NoPlaceLeftBehind, BCanReachWhatMoved | breaks | holds | needs finding 3 |
+| teams | XsmHandoverPlaces | XsmHandoverPlaces | NoSeatInATeamALeft | (not in original) | holds | ADDED (F17): B is in a team only if it was added while the handover ran, or A was in the team when the handover began and was not removed from it since. History variables `left` and `added` carry the facts. Last report: `out-XsmHandoverPlaces-2/` |
 | teams | XsmHandoverTeamSync | XsmHandoverTeamSync | HandoverStands, SameTeamAtRest, BHoldsTheSeatEverywhere | breaks | holds | `acked_by` and the conflict log are not modelled (op confirmation = the record holds the op) |
 
 ## Findings for the plan (the fixed spec, as written, leaves these open)
@@ -77,6 +78,14 @@ the fixed model, rule text unchanged unless the comment says CHANGED.
    implementation needs the same, or one step must decide membership and the other must follow it.
 4. Rules that no mutation caught (not evidence of absence): in `XsmHandoverPlaces`, dropping the membership re-check alone keeps all
    three rules true (B joins a team A just left); the acceptance sentence "B does not join a team A left" has no rule.
+   **Closed (F17, spec 2.1):** the rule `NoSeatInATeamALeft` now states it. Mutation: with the re-check dropped in `MoveTeam`
+   (`IF aIn[t]` replaced by `IF TRUE`, scratch copy) TLC reports `NoSeatInATeamALeft breaks` in 3 steps (Begin, OutsideRemoves, MoveTeam)
+   and the other three rules keep holding; restored, all four hold. Code: `handover._teams` re-checks membership under the team's
+   lock, and `handover._revert_board` takes the board move back for a team A left between the boards step and the teams step (F16).
+5. Spec gaps 1 to 3 became code in this phase: F14 (finding 1: `questions.record_reply` takes the successor of the record's sender,
+   and a final answer the successor read inside the window moves with the question), F15 (finding 2: a reply to a question of a
+   handed-over conversation passes `send` and the receiving gate on the scope the peer had with A, marker `handover:<id>`; the copy
+   also carries the named projects A joined), F16 (finding 3: the revert above).
 
 ## Mutation checks (rule detects its fix being removed)
 
@@ -85,8 +94,9 @@ ack (YesIsFinal), transfer hold bound to A (HeldFollowsOwner), board without rec
 EveryOwnerItemClosed), remote without originals moved (QuestionAnswerable), remote without pull and without unconfirmed
 (SuccessorAnswerKept, AnswerRecorded, ViewsAgree), team sync without re-apply (HandoverStands, BHoldsTheSeatEverywhere), scope
 groups without copy (LateAnswerReachesSuccessor), scope groups with final children left (GroupShowsEveryAnswer,
-GroupStatusTruthful), round1 without the sender swap (AnswerRecorded). Not caught by these rules: concurrent Scn_c without the lock
-(effective target following already covers it) and places without the re-check (finding 4).
+GroupStatusTruthful), round1 without the sender swap (AnswerRecorded), places without the membership re-check
+(NoSeatInATeamALeft, F17). Not caught by these rules: concurrent Scn_c without the lock
+(effective target following already covers it).
 
 ## Note on `req.py red SM-MODEL`
 

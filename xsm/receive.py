@@ -678,6 +678,17 @@ def _carried(parsed, me: dict | None) -> dict | None:
     return original if original.get("handover_history") else None
 
 
+def _handover_reply(parsed, sender: dict, me: dict) -> bool:
+    """Whether this reply came on a handover and this machine's records show it. A blocked
+    session still blocks."""
+    if not str(parsed.header.get("scope") or "").startswith("handover:"):
+        return False
+    if sender.get("ref") in config.blocked() or me.get("ref") in config.blocked():
+        return False
+    from . import questions
+    return questions.handover_reply_ok(me, sender, parsed.header)
+
+
 def _carried_notice(me: dict | None, parsed, original: dict | None) -> str:
     """What the reader of a message that came by handover is told first: the state
     the old session had left it in (when it had shown it already, as a profile
@@ -954,6 +965,11 @@ def check(parsed, me: dict | None, cfg: dict | None = None) -> tuple:
             decision, reason = "block", mismatch
         elif (carried := _carried(parsed, me)) is not None:
             decision, reason = _check_carried(sender, me, cfg, parsed, carried)
+        elif _handover_reply(parsed, sender, me):
+            # A reply in a conversation the old session had before a handover: this machine's own
+            # records say so (the question, the one asked, the handover), so it is not refused for
+            # want of a scope with the successor (state-model F15).
+            decision, reason = "pass", "reply in a conversation that came with a handover (%s)" % parsed.header.get("scope")
         else:
             decision, reason, scope = _check_sender(sender, me, cfg, parsed)
             if decision != "block" and scope != parsed.header.get("scope"):

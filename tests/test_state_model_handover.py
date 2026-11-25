@@ -230,6 +230,164 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(status['status'], 'final')
         self.assertEqual([r.get('id') for r in status['replies']], [sent['r'].msg_id])
 
+    # ================= SM-F14: an answer B reads inside the handover window is B's at once =================
+
+    # Today: wrong value. Between _begin (follow(A) == B) and the questions step the question's
+    # sender is still A, so record_reply refuses B as the receiver: B reads the answer and its
+    # question record stays 'pending' until B polls (scratchpad/probe_gaps.py gap 1).
+    def test_SM_F14_answer_read_by_B_before_the_questions_step_is_final_without_polling(self):
+        from xsm import handover, questions, receive
+        self._question('q1', self.lead, self.bee)
+        real = handover._questions
+        seen = {}
+
+        def answer_then_questions(me, target):
+            seen['r'] = self._send(self.lead, 'ANSWER-WINDOW', kind='reply', reply_to='q1', outcome='succeeded')
+            seen['taken'] = receive.take_inbox_claims(self.new)          # B reads it now, mid-handover
+            return real(me, target)
+        with mock.patch.object(handover, '_questions', side_effect=answer_then_questions):
+            self._hand_over()
+        self.assertEqual(seen['r'].target['session_id'], 'next')
+        self.assertTrue(any('ANSWER-WINDOW' in m for m in seen['taken']['messages']), seen['taken'])
+        status = questions.status(self.new, 'q1')                        # no poll_replies
+        self.assertEqual(status['status'], 'final')
+        self.assertEqual([r.get('id') for r in status['replies']], [seen['r'].msg_id])
+
+    # Today: wrong value, too. The unit: while the record is `moving`, B is the receiver of A's question.
+    def test_SM_F14_record_reply_takes_the_successor_of_the_record_sender_while_moving(self):
+        from xsm import handover, questions
+        self._question('q1', self.lead, self.bee)
+        seen = {}
+        real = handover._questions
+
+        def probing(me, target):
+            seen['b'] = self._reply('q1', 'rB', self.new, self.bee, outcome='succeeded')
+            seen['out'] = self._reply('q1', 'rO', self.out, self.bee)
+            return real(me, target)
+        with mock.patch.object(handover, '_questions', side_effect=probing):
+            self._hand_over()
+        self.assertTrue(seen['b'])
+        self.assertFalse(seen['out'], 'a session that is not the successor must not be taken as the asker')
+        self.assertEqual([r['id'] for r in questions.status(self.new, 'q1')['replies']], ['rB'])
+
+    def test_control_SM_F14_the_read_rule_is_not_widened(self):
+        # A new question A asks after the handover is not visible to B (spec 3.4).
+        from xsm import questions
+        self._hand_over()
+        self._question('q-after', self.lead, self.bee)
+        self.assertEqual(questions.status(self.new, 'q-after')['status'], 'refused')
+
+    # ================= SM-F16: a team A left between the board step and the team step =================
+
+    def _leave_before_the_teams_step(self, team_name='core'):
+        """A leaves `team_name` itself after the boards step moved its items and before _teams runs."""
+        from xsm import handover, teams
+        real = handover._teams
+
+        def left_first(me, target, places, approval):
+            teams.remove(self.lead, team_name, teams.member_of(self.lead), None)
+            return real(me, target, places, approval)
+        return mock.patch.object(handover, '_teams', side_effect=left_first)
+
+    def _heads(self, team_name, item):
+        from xsm import board
+        return [h['body'] for h in board.current(team_name).get(item, [])]
+
+    # Today: wrong value. owner/next keeps the moved text in a team next is not in (probe_gaps.py gap 3).
+    def test_SM_F16_a_team_A_left_meanwhile_keeps_no_owner_B_item_and_A_has_its_content_back(self):
+        from xsm import board, teams
+        board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')
+        with self._leave_before_the_teams_step():
+            rec = self._hand_over()
+        team = teams.require('core')
+        self.assertFalse(teams.is_member(team, self.new), 'B must not be seated in a team A had left')
+        self.assertFalse(teams.is_member(team, self.lead))
+        mine = self._heads('core', 'owner/lead')
+        self.assertEqual(len(mine), 1)
+        self.assertTrue(mine[0].startswith('the release plan'), mine)
+        self.assertIn('returned', mine[0])
+        theirs = self._heads('core', 'owner/next')
+        self.assertEqual(len(theirs), 1)
+        self.assertTrue(theirs[0].startswith('returned'), theirs)
+        self.assertIn('lead left', theirs[0])
+        self.assertIn('core', rec['skipped']['teams'])
+        self.assertNotIn('release plan', theirs[0])
+
+    def test_SM_F16_the_result_and_the_letter_name_the_team_as_skipped_and_list_no_moved_items(self):
+        from xsm import board
+        board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')
+        board.set_item(self.lead, 'core', 'owner/lead/docs', 'README')
+        with self._leave_before_the_teams_step():
+            rec = self._hand_over()
+        self.assertIn('core', rec['skipped']['teams'])
+        self.assertEqual(rec['items'].get('core') or [], [])
+        self.assertEqual([t['team'] for t in rec['teams']], [])
+        self.assertIn('core', rec['letter'])
+        self.assertIn('not moved', rec['letter'])
+        self.assertNotIn('board items owner', rec['letter'])
+
+    def test_SM_F16_a_team_A_stayed_in_still_moves_as_one_unit(self):
+        from xsm import board, teams
+        teams.create(self.lead, 'ops')
+        board.set_item(self.lead, 'core', 'owner/lead', 'core plan')
+        board.set_item(self.lead, 'ops', 'owner/lead', 'ops plan')
+        with self._leave_before_the_teams_step('core'):
+            rec = self._hand_over()
+        self.assertTrue(teams.is_member(teams.require('ops'), self.new))
+        self.assertEqual(rec['items']['ops'], ['owner/lead'])
+        self.assertIn('ops plan', self._heads('ops', 'owner/next')[0])
+        self.assertFalse(teams.is_member(teams.require('core'), self.new))
+        self.assertTrue(self._heads('core', 'owner/lead')[0].startswith('core plan'))
+
+    def test_SM_F16_the_revert_runs_again_without_writing_twice(self):
+        from xsm import board, handover
+        board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')
+        with self._leave_before_the_teams_step():
+            rec = self._hand_over()
+        before = (self._heads('core', 'owner/lead'), self._heads('core', 'owner/next'),
+                  len(board.doc.read(board.path('core'))))
+        handover._teams(self.lead, self.new, rec['places'], 'x')          # a resumed run: the same team is left
+        after = (self._heads('core', 'owner/lead'), self._heads('core', 'owner/next'),
+                 len(board.doc.read(board.path('core'))))
+        self.assertEqual(before, after)
+
+    def test_SM_F16_a_process_that_dies_inside_the_revert_is_finished_by_running_it_again(self):
+        from xsm import board, doc, handover, teams
+        board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')
+        real_teams, real_add, calls = handover._teams, doc.add, {'n': 0}
+
+        def dies_on_the_second_write(*a, **k):
+            calls['n'] += 1
+            if calls['n'] == 2:
+                raise _Crash()
+            return real_add(*a, **k)
+
+        def leave_then_die_inside_the_revert(me, target, places, approval):
+            teams.remove(self.lead, 'core', teams.member_of(self.lead), None)
+            with mock.patch.object(doc, 'add', side_effect=dies_on_the_second_write):
+                return real_teams(me, target, places, approval)
+        with mock.patch.object(handover, '_teams', side_effect=leave_then_die_inside_the_revert):
+            with self.assertRaises(_Crash):
+                self._hand_over()
+        self.assertEqual(calls['n'], 2, 'the process must die inside the revert, on its second write')
+        self.assertEqual(handover.load(self.lead)['state'], 'moving')
+        rec = self._hand_over()                                      # the same target: finishes it
+        self.assertEqual(rec['state'], 'done')
+        self.assertIn('core', rec['skipped']['teams'])
+        self.assertEqual(len(self._heads('core', 'owner/lead')), 1)
+        self.assertTrue(self._heads('core', 'owner/lead')[0].startswith('the release plan'))
+        self.assertEqual(len(self._heads('core', 'owner/next')), 1)
+        self.assertTrue(self._heads('core', 'owner/next')[0].startswith('returned'))
+        self.assertFalse(teams.is_member(teams.require('core'), self.new))
+
+    def test_control_SM_F16_a_team_A_never_left_moves_with_its_items(self):
+        from xsm import board, teams
+        board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')
+        rec = self._hand_over()
+        self.assertTrue(teams.is_member(teams.require('core'), self.new))
+        self.assertEqual(rec['items']['core'], ['owner/lead'])
+        self.assertNotIn('core', rec['skipped']['teams'])
+
     # ================= SM-F5: concurrent handovers on one machine =================
 
     def _race(self, first, second):

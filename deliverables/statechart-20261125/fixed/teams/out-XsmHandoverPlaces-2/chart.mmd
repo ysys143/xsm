@@ -1,0 +1,31 @@
+---
+title: "xsm handover when A is in several teams (fixed)"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: running
+    lg1: clean
+  }
+  class lg0 blue
+  class lg1 teal
+  s0: Not started: A in t1#59; boards moved in no team#59; B took A's place in no team
+  s1: Running: A in t1#59; boards moved in no team#59; B took A's place in no team
+  s2: Running: A in no team#59; boards moved in t1#59; B took A's place in t1
+  s3: Running: A in no team#59; boards moved in no team#59; B took A's place in no team
+  s4: Running: A in no team#59; boards moved in no team#59; B took A's place in no team#59; skipped (A had left): t1
+  s5: Handover done: A in no team#59; boards moved in t1#59; B took A's place in t1
+  s6: Handover done: A in no team#59; boards moved in no team#59; B took A's place in no team#59; skipped (A had left): t1
+  [*] --> s0
+  s0 --> s1: the handover is recorded and lists A's teams once
+  s1 --> s2: A's items in one team move to B and B takes A's place there
+  s1 --> s3: someone removes A from a team
+  s2 --> s5: the handover is finished
+  s3 --> s4: a team A has left meanwhile is skipped
+  s4 --> s6: the handover is finished
+  class s0 blue
+  class s1 blue
+  class s2 blue
+  class s3 blue
+  class s4 blue
+  class s5 teal
+  class s6 teal
