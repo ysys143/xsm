@@ -158,15 +158,19 @@ summary is for a session that knows nothing of your conversation:
 - anything your user told you to keep doing, or never to do.
 
 xsm moves the rest: your team places and the lead's seat, your `owner/<your
-name>` board items, your unread and held DMs (they arrive in your inbox, held ones stay held), your pending questions (late
-answers go to OO), and DMs sent to you from then on. After it you have no team
-place.
+name>` board items, your unread and held DMs (they arrive in OO's inbox, held
+ones stay held), your pending questions and question groups (late answers go
+to OO), your connections (reaches, folder and project scopes, worker links;
+the confirmation lists them, and a copy that fails is skipped and named in the
+letter), and DMs sent to you from then on. After it you have no team place.
 
-The successor must be registered and running on the same machine. A remote
-machine offline when the handover is published misses its testimony; there
-is no automatic resend, so it will not accept the successor's reply to the
-old question. Report any propagation warnings separately from the local
-handover result. Do not promise that every remote machine received it.
+The successor must be registered and running on the same machine. If OO has
+itself handed over, the handover goes on to its successor. One handover runs at
+a time on a machine; if one is cut off, run the same command again to finish
+it (`xsm doctor` names an unfinished one). A remote machine that asked you
+checks the succession itself when OO's answer arrives; if it cannot reach this
+machine it keeps the answer marked `unconfirmed` until it can. Report any
+propagation warnings separately from the local handover result.
 
 ## Taking over
 
